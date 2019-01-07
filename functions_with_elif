@@ -1,0 +1,493 @@
+global account
+global product
+global transactions
+global choice
+
+account = {}
+product = {}
+sales = {}
+
+
+def welcome(): # welcome text
+    return hyphen() + "Welcome to my new sales app :::: To exit the program, type exit() ." + "\n------------------------------------------------------------------- "
+
+
+def mainmenu(): #define main menu
+    print welcome()
+    print "\n MAIN MENU "
+    print "-------------------------------------------------------"
+    return " 1. Create account \n 2. Create Product \n 3. Deposit Funds \n 4. Buy Product  \n 5. Withdraw funds \n 6. Edit Product \n 7. Check Balance \n 8. Check Sales \n 9. Exit"  # tick
+
+
+def maintenance():
+    print hyphen()
+    print "This functionality is under development"
+    return hyphen()  # tick
+
+
+def createaccount():
+    # function to create an create account
+    amount = 0
+    while True:
+        idnum = input("Please enter your ID Number or enter 00 to go back to main menu: ")
+
+        if idnum == 00:  # check if the user requests main menu
+
+            break  # go back to main menu
+        else:
+            if account.has_key(idnum):  # check the duplicate ID in accounts dictionary
+                print "The Account with that ID already exists."
+            else:
+                name = raw_input("Please enter your names: ")
+                while True:
+                    type = raw_input("Enter your account type( 'vendor'/ 'customer' ): ")
+                    if type == 'vendor' or type == 'customer':  # check for the correct spelling
+                        account[idnum] = [name, amount, type]
+                        print "\n Success! Account name %s has been successfully created as a %s" % (name, type)
+                        break
+
+                    else:
+                        print "\n Account type rejected. Please type the account type correctly."
+                return "\n Returning to Main Menu..."
+
+    return "Returning to Main Menu..."  # tick
+
+
+def viewstock():
+    if not product:
+        return "\n The stock is empty"
+    else:
+        print "\n LIST OF STOCK"
+        print hyphen()
+        print "PRODUCT ID   |   PRODUCT NAME   |   PRODUCT PRICE   |   QUANTITY   |   CATEGORY \n "
+        for keys, values in product.items():
+            prodid = keys
+            prodname = product[prodid][0]
+            prodprice = product[prodid][1]
+            prodquantity = product[prodid][2]
+            prodtype = product[prodid][3]
+
+            print str(prodid) + "  |  " + prodname + "  |  " + str(prodprice) + "  |  " + str(prodquantity) + "  |  " + prodtype + "\n"
+        return hyphen()  # tick
+
+
+def createproduct():
+    # function to create productdict
+    if not account:
+        print "\n You are not registered yet. Please register first"
+    else:
+        while True:
+            idnum = input("Please Enter your account id to login or 00 to Go Back to main menu: ")
+            try:
+                if idnum == 00:  # Go back to main menu
+                    break
+                else:
+                    if not account:
+                        print "\n Failed! You are not registered yet. Please register first. \n"
+                    else:
+                        name = account[idnum][0]
+                        acctype = account[idnum][2]
+                        if account.has_key(idnum):  # check if the account exists
+                            if acctype == 'customer':  # check if the identity is a vendor
+                                print "\n Failed! You must be a vendor to perform this operation."
+                                break
+                            else:
+
+                                print "\n Welcome %s \n" % (name)
+
+                                prodid = input(
+                                    "Enter the product ID or type 0 to go back to Main menu. To view stock type 1 : ")
+                                if prodid == 0:
+                                    break
+                                elif prodid == 1:
+                                    return viewstock()
+                                else:
+                                    if product.has_key(prodid):  # check for product duplicate entry
+                                        print "\n Failed! The product with id %s already exists" % (prodid)
+                                    else:
+                                        prodname = raw_input("Enter the Product Name: ")
+                                        prodprice = input("Enter the product Price: ")
+                                        prodquantity = input("Enter the product quantity: ")
+                                        prodtype = raw_input("Enter product category: ")
+                                        sellerid = input("Enter the seller ID: ")
+                                        # check if the seller id exists in accounts list
+                                        keys = account.has_key(sellerid)
+                                        if keys:
+                                            sellername = account[sellerid][0]
+
+                                            product[prodid] = [prodname, prodprice,
+                                                               prodquantity, prodtype, sellerid]  # add to dictionary
+                                            print "\n Product ID: %s , Product Name: %s, Price: %s, Quantity: %s Seller: %s. Has been added successfully!\n" % (prodid, prodname, prodprice, prodquantity, sellername)
+                                            break
+                                        else:
+                                            print "\n Wrong seller ID . That account is not registered. Please check the details and try again"
+
+                        else:
+                            print "\n The account %s does not exist" % (idnum)
+                            break
+
+            except:
+                return "\n ...\n"
+        return "\n Returning to Main Menu ... "  # tick
+
+
+def deposit():
+    # function to deposit funds
+    if not account:
+        print "\n You are not registered yet. Please register first"
+    else:
+        try:
+            while True:
+                idnum = input("Please Enter your id to login or 00 to Go Back to main menu: ")
+                if idnum == 00:  # Go back to main menu
+                    break
+                else:
+                    if account.has_key(idnum):  # Check if the account exists
+                        amount = account[idnum][1]
+                        name = account[idnum][0]
+                        print "Welcome %s \n" % (name)
+                        cash = input("Please enter the amount you want to deposit: ")
+                        if cash <= 0:
+                            print "\n Rejected! Please add amount more than zero! "
+                        else:
+                            newbal = cash + amount
+                            # update the new balance to the provided account
+                            account[idnum][1] = newbal
+                            print "\n Confirmed! Amount Ksh %s added successfully. Your new balance is Ksh %s" % (cash, newbal)
+                            break
+                    else:
+                        print "The account %s does not exist" % (idnum)
+                        break
+
+            return "\n Returning to main Menu..."
+        except:
+            None  # tick
+
+
+def buyproduct():
+    # function to buy productdict
+    while True:
+        idnum = input("\n Please enter your account id to login or type 0 to go back to Main Menu: ")
+        if idnum == 0:
+            break
+        else:
+            if not account: #checks if there is any entry in the account dictionary
+                return "\n Please activate your account first."
+            else:
+                if account.has_key(idnum):#checks if the account is registered in the accounts dictionary
+                    name = account[idnum][0]
+                    print "Welcome %s \n" % (name)
+
+                    if not product: #checks if there is any entry in the product dictionary
+                        return "\n The products are out of stock"
+                    else:
+                        print "\n LIST OF STOCK"
+                        print hyphen()
+                        print "PRODUCT ID   |   PRODUCT NAME   |   PRODUCT PRICE   |   QUANTITY   |   CATEGORY \n "
+                        for keys, values in product.items():
+                            prodid = keys
+                            prodname = product[prodid][0]
+                            prodprice = product[prodid][1]
+                            prodquantity = product[prodid][2]
+                            prodtype = product[prodid][3]
+
+                            print str(prodid) + "  |  " + prodname + "  |  " + str(prodprice) + "  |  " + str(prodquantity) + "  |  " + prodtype + "\n"
+                        print hyphen()  # tick
+                        while True:
+                            pid = input(
+                                "\n Enter the product ID of the product you wish to buy or enter 0 to go back: ")
+                            currentbal = account[idnum][1]
+                            if pid == 00:
+                                break
+                            else:
+
+                                if product.has_key(pid):  # check if the product id is in stock
+                                    pname = product[pid][0]
+                                    pprice = product[pid][1]
+                                    pquantitity = product[pid][2]
+                                    print "\n Item Name : %s, Price: Ksh %s has been selected. \n" % (pname, pprice)
+                                    # ask the user quantity of the product he/she wishes to buy
+                                    quantity = input("Please enter the quantity you wish to buy: ")
+                                    if pquantitity < quantity:  # check the remaining stock
+                                        print "Only %s of %s is available in the stock. You can buy the remaining stock or try again later. " % (pquantitity, pname)
+                                    else:
+                                        # Get total PRICE and add to Sales
+                                        totalprice = pprice * quantity
+                                        if totalprice > currentbal:  # theck the total price aganist account balance
+                                            print "\n Your shopping cost exceeds you current balance. Please recharge your wallet to do shopping"
+                                        else:
+                                            newquantity = pquantitity - quantity
+                                            # reduce quantity in stock
+                                            product[pid][2] = newquantity
+
+                                            # reduce the balance
+                                            newbalance = currentbal - totalprice
+                                            account[idnum][1] = newbalance
+
+                                            # deposit the cash to seller account
+
+                                            sellerid = product[pid][4]  # fetch seller id
+                                            # fetch seller current balance
+                                            sellerbal = account[sellerid][1]
+                                            sellernewbal = sellerbal + totalprice  # deposit amount from buyer's account
+                                            # store the new Balance
+                                            account[sellerid][1] = sellernewbal
+
+                                            # add the product and customer id to Sales
+                                            sales[pid] = [quantity, totalprice, idnum]
+                                            print "\n Item checked out successfully. Amount Ksh %s has been deducted from your account. Your new balance is Ksh. %s. \n Thank you for shopping with us!" % (totalprice, newbalance)
+                                            break
+                                else:
+                                    print "\n The product ID does not exist. Please check the id and try again."
+
+                        return "..."
+
+                else:
+                    print"\n Invalid Login details.Please check the ID and enter again."
+
+    return "\n Returning to main menu...\n"
+
+
+def withdraw():
+    # function to withdraw
+    try:
+        while True:
+
+            idnum = input("Please Enter your id to login or 00 to Go Back to main menu: ")
+            amount = account[idnum][1]
+            name = account[idnum][0]
+            if idnum == 00:
+                break
+            else:
+                if account.has_key(idnum):
+                    print "Welcome %s \n" % (name)
+                    withdrawal = input("Please enter the amount You wish to withdraw: ")
+                    if withdrawal > amount:  # Check if the account balance qualifies for widthdrawal
+                        print "\n Failed! You have insufficient balance. Your account balance is Ksh %s " % (amount)
+                        break
+
+                    else:
+                        newbalance = amount - withdrawal
+                        account[idnum][1] = newbalance  # reduce the account balance
+                        print "\n Success! You have widthdrawn Ksh %s. Your New Balance is Ksh %s. Thank you for staying with us!" % (withdrawal, newbalance)
+                        break
+                else:
+                    print "\n Invalid login details.The account does not exist."
+
+        return "\n Returning to main Menu..."
+    except:
+        return None  # tick
+
+
+def editchoices():
+    # display choices which to editprod
+
+    return " 1. Product Name \n 2. Product Price \n 3. Product Quantity \n 4. Product Type \n"  # tick
+
+
+def editprod():
+    # function to edit product
+    while True:
+        idnum = input("Please Enter your account id to login or 00 to Go Back to main menu: ")
+
+        if idnum == 00:  # Go back to main menu
+            break
+        else:
+            if not account:  # check if the account records is empty
+                print "\n Failed! You are not registered yet. Please register first. \n"
+            else:
+                # check if the account exists
+                if account.has_key(idnum):
+                    # check if the account is a vendor
+                    acctype = account[idnum][2]
+                    if acctype == 'vendor':
+                        name = account[idnum][0]
+                        print "Welcome %s \n" % (name)
+
+                        prodid = input("Please enter the product you wish to edit: ")
+                        if product.has_key(prodid):  # check if the product exists in the records
+                            prodname = product[prodid][0]
+                            prodprice = product[prodid][1]
+                            prodquantity = product[prodid][2]
+                            prodtype = product[prodid][3]
+                            print "\n ---------------------  PRODUCT SUMMARY  ------------------- \n \n"
+
+                            print "PRODUCT ID: %s \n PRODUCT NAME: %s \n PRODUCT PRICE: KSH %s \n PRODUCT QUANTITY: %s \n PRODUCT TYPE: %s \n" % (prodid, prodname, prodprice, prodquantity, prodtype)
+                            print hyphen()
+                            # ask the user which part user should edit
+                            while True:
+
+                                print editchoices()
+                                choose = input("Type the part which you wish to edit: ")
+                                if choose == 1:
+                                    while True:
+                                        print "Old product Name: " + prodname
+                                        pname = raw_input("\n Type the new Product Name: ")
+                                        if product.has_key(pname):
+                                            print "\n Still the same name. No new changes saved. \n"
+                                            break
+                                        else:
+                                            product[prodid][0] = pname
+                                            print "\n Changes Saved! Your new product name is : %s" % (pname)
+                                            break
+                                    return "\n Returning to top..."
+                                elif choose == 2:
+                                    while True:
+                                        print "Old product Price: Ksh " + str(prodprice)
+                                        pprice = input("\n Type the new Product Price: ")
+                                        if product.has_key(pprice):
+                                            print "\n Still the same Price. No new changes saved. \n"
+                                            break
+                                        else:
+                                            product[prodid][1] = pprice
+                                            print "\n Changes Saved! Your new product name is : %s" % (pprice)
+                                            break
+                                    return "\n Returning to top..."
+
+                                elif choose == 3:
+                                    while True:
+                                        print "Current Quantity: " + str(prodquantity)
+                                        pquantitity = input("\n Type the new Product Quantity: ")
+                                        if product.has_key(pquantitity):
+                                            print "\n Still the same quantity. No new changes saved. \n"
+                                            break
+                                        else:
+                                            product[prodid][2] = pquantitity
+                                            print "\n Changes Saved! Your new product quantity : %s" % (pquantitity)
+                                            break
+                                    return "\n Returning to top..."
+
+                                elif choose == 4:
+                                    while True:
+                                        print "Current Product category: " + prodtype
+                                        ptype = input("\n Type the new Product category: ")
+                                        if product.has_key(ptype):
+                                            print "\n Still the same category. No new changes saved. \n"
+                                            break
+                                        else:
+                                            product[prodid][3] = ptype
+                                            print "\n Changes Saved! Your new product category is : %s" % (ptype)
+                                            break
+                                    return "\n Returning to top..."
+
+                                else:
+                                    print"\n Invalid choice!Please enter the number of your choice. \n"
+
+                        else:
+                            print "\n The Product ID %s cannot be found. Please recheck your entry and try again. " % (prodid)
+
+                    else:
+                        return "\n Failed! You do not have permissions to execute this operation as a customer. \n"
+
+    return "\n Returning to Main Menu ..."  # tick
+
+
+def checkbal():
+    # function to withdraw funds
+    try:
+        while True:
+            idnum = input("Please enter Your ID or enter 00 to Go back: ")
+            if idnum == 00:  # go back to main menu
+                break
+            else:
+                if account.has_key(idnum):  # check for the account existence
+                    name = account[idnum][0]
+                    amount = account[idnum][1]
+                    acctype = account[idnum][2]
+                    print hyphen()
+                    return " Account name: %s \n ID Number: %s \n Current Balance: Ksh %s \n Account type: %s " % (name, idnum, amount, acctype)
+
+                else:
+                    return "The account id: %s does not exist" % (idnum)
+
+        return "\n Returning to Main Menu..."
+    except:
+        return None  # tick
+
+
+def checksales():
+    # function to check sales from dict
+    while True:
+        if not account:  # check if there is any registered account
+            print"\n Please register your  first"
+            break
+        else:
+            idnum = input("\n Please enter your account ID to login or enter 0 to go back: ")
+            if idnum == 0:
+                break
+            else:
+                # check if the account is a vendor
+                acctype = account[idnum][2]
+                if acctype == 'customer':
+                    print "\n Permission denied. Only customers are allowed."
+                else:
+                    name = account[idnum][0]
+                    print "Welcome %s \n" % (name)  # login the user
+
+                    # Display sales SUMMARY
+                    print "\n LIST OF SALES"
+                    print hyphen()
+                    print "PRODUCT ID   |   PRODUCT NAME   |   PRODUCT PRICE (KSH)   |   QUANTITY BOUGHT  |   TOTAL PRICE  |   CUSTOMER ID  \n "
+                    if not sales:  # check if there is any sales transactions
+                        return "\n The sales record is empty "
+                    else:
+                        # get details from sales
+                        for keys, values in sales.items():
+                            produid = keys
+                            prodname = product[produid][0]
+                            prodprice = product[produid][1]
+                            saleqty = sales[produid][0]
+                            totalp = sales[produid][1]
+                            custid = sales[produid][2]
+                            print "\n " + "  |   " + str(produid) + "  |   " + prodname + "  |   " + str(prodprice) + "  |   " + str(saleqty) + "  |   " + str(totalp) + "  |   " + str(custid)
+                        print hyphen()
+                        totalitems = len(sales)
+                        sum = 0
+                        for x in sales.values():
+                            sum += x[1]
+                        print "TOTAL AMOUNT SALES INCOME: KSH %s ___________________ TOTAL NUMBER OF ITEMS: %s" % (sum, totalitems)
+                        print hyphen()
+                        break
+
+    return "\n Returning to Main Menu."
+
+
+def exit():
+    # function to exit the program
+    print hyphen()
+    return "Exiting the program ..."  # tick
+
+
+def hyphen():
+    return "\n -------------------------------------------------------------------  \n"  # tick
+
+
+if __name__ == '__main__':
+    while True:
+        print mainmenu()
+        choice = raw_input("Choose your option: ")
+        if choice == '1':
+            print createaccount()
+        elif choice == '2':
+            print createproduct()
+        elif choice == '3':
+            print deposit()
+        elif choice == '4':
+            print buyproduct()
+        elif choice == '5':
+            print withdraw()
+        elif choice == '6':
+            print editprod()
+        elif choice == '7':
+            print checkbal()
+        elif choice == '8':
+            print checksales()
+        elif choice == '9':
+            print exit()
+            break
+        elif choice == 'exit()':
+            print exit()
+            break
+        else:
+            print hyphen()
+            print "\n Invalid choice. Please enter the choices as provided above."  # tick
