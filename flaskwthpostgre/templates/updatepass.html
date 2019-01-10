@@ -1,0 +1,25 @@
+<!--the html extends block from layout.html-->
+{% extends "layout.html" %}
+{% block content %}
+<!--The block loads data from the db and displays. acts like a normal html-->
+    <h1>Project</h1>
+
+    <form method = "POST" action="/updatepass">
+        <!----> 
+            <legend>Update name and password</legend>
+            </br>
+            <label for="pwd">Old Password</label>
+            <br>
+            <input type="password" name="pwd" value="">
+            <br>
+            <label for="Npwd">NewPassword</label>
+            <br>
+            <input type="password" name="npwd" value="">
+            <br>
+            
+            <input type="submit" value="Submit">
+    </form>
+          
+    
+
+{% endblock content%}

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+       
+    <form method = "POST" action="/login">
+        <!----> 
+            <legend>Login :</legend>
+            <br>
+            <label for="username">username</label>
+            <br>
+            <input type="text" name="user" value="">
+            <br>
+            <label for="pwd">Password</label>
+            <br>
+            <input type="password" name="pwd" value="">
+            <br>
+            
+            <input type="submit" value="Submit">
+             
+
+
+            </div>
+           
+        </form>
+
+        
+{% endblock content%}

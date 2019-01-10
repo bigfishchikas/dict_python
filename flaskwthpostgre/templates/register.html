@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+       
+    <form method = "POST" action="/register">
+        <!----> 
+            <legend>Register Personal information:</legend>
+            <label for="pname">Name</label>
+            <br>
+            <input type="text" name="user" value="">
+            <br>
+            <label for="pwd">Password</label>
+            <br>
+            <input type="password" name="pwd" value="">
+            <br>
+            <label for="pwd2">Confirm Password</label>
+            <br>
+            <input type="password" name="pwd2" value="">
+            <br>
+            
+            <input type="submit" value="Submit">
+
+             
+
+
+            </div>
+           
+        </form>
+{% endblock content%}

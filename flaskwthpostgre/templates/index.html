@@ -1,0 +1,23 @@
+<!--the html extends block from layout.html-->
+{% extends "layout.html" %}
+{% block content %}
+<!--The block loads data from the db and displays. acts like a normal html-->
+
+
+    {% for post in posts %}
+      <h1>{{post.student}}</h1>
+      <p> By {{post.teacher}} on {{post.training}}</p>
+    {% endfor %}
+
+    {{user}}
+
+    <a href="{{url_for('updatepass')}}" >Update</a>
+    <form method = "POST" action="/deletepass">
+                        
+      <input type="submit" value="Delete">
+    
+  
+    
+
+{% endblock content%}
+
